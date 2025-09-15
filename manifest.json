@@ -1,0 +1,21 @@
+{
+  "name": "PetalPing",
+  "short_name": "PetalPing",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff69b4",
+  "description": "Chat with your friends using PetalPing",
+  "icons": [
+    {
+      "src": "icons/petalping.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/petalping.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
