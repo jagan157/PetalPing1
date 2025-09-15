@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff69b4">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PetalPing</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(reg => console.log("Service Worker registered:", reg))
+      .catch(err => console.error("SW registration failed:", err));
+  }
+</script>
+
+<div class="app-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>PetalPing</h2>
+      <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+    </div>
+    <button class="add-btn" id="add-btn" onclick="requestMobileContacts()">+ Add People</button>
+    <button class="add-icon-btn" id="add-icon-btn" onclick="requestMobileContacts()">➕</button>
+    <ul id="contacts"></ul>
+  </div>
+
+  <!-- Chat area -->
+  <div class="chat-container">
+    <div class="chat-header" id="chat-header">Select a friend to start chat</div>
+    <div id="chat-box" class="chat-box"></div>
+    <div class="chat-input-area">
+      <button type="button" class="emoji-btn" onclick="toggleEmojiPanel()">😀</button>
+      <button type="button" class="attach-btn" onclick="document.getElementById('file-input').click()">📎</button>
+      <input type="file" id="file-input" style="display:none" onchange="handleFile(event)">
+      <input type="text" id="message" placeholder="Type a message">
+      <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+
+    <!-- Emoji panel -->
+    <div id="emoji-panel" class="emoji-panel">
+      <div id="emoji-tabs" class="emoji-tabs"></div>
+      <div id="emoji-grid" class="emoji-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div id="profile-modal" class="profile-modal">
+  <div class="profile-content">
+    <span class="close-btn" onclick="closeProfile()">&times;</span>
+    <img id="profile-pic-large" src="" alt="Profile">
+    <h2 id="profile-name"></h2>
+    <p id="profile-status">Hey there! I am using PetalPing.</p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
