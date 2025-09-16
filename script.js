@@ -33,13 +33,13 @@ function enableChatInput() {
 // Initialize as disabled
 disableChatInput();
 
-// Sample emojis
+// Emojis
 const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😉","😊","😋","😎","😍","😘","🥰"];
 emojis.forEach(e => {
   const span = document.createElement("span");
   span.textContent = e;
   span.onclick = () => {
-    if(!currentFriend) return; // Only allow if friend selected
+    if(!currentFriend) return;
     messageInput.value += e;
     messageInput.focus();
   };
@@ -72,12 +72,12 @@ function selectFriend(name) {
   document.getElementById("chatWith").innerText = "Chat with " + name;
   chatArea.innerHTML = "";
   hideSidebar();
-  enableChatInput(); // Enable chat now
+  enableChatInput();
 }
 
 // Send message
 function sendMessage() {
-  if(!currentFriend) return; // Only send if friend selected
+  if(!currentFriend) return;
   const text = messageInput.value.trim();
   if(!text) return;
   addMessage(text,"sent", null, currentFriend);
@@ -130,16 +130,16 @@ function addMessage(text, type, file=null, sender=null){
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-// Preview file/image
+// File preview
 function previewFile(input){
   const file = input.files[0];
-  if(!file || !currentFriend) return; // Only allow if friend selected
+  if(!file || !currentFriend) return;
   const reader = new FileReader();
   reader.onload = e => addMessage("", "sent", e.target.result, currentFriend);
   reader.readAsDataURL(file);
 }
 
-// Preview image overlay
+// Image overlay
 function previewInChat(src){
   const overlay = document.createElement("div");
   overlay.className = "chatOverlay";
@@ -150,9 +150,9 @@ function previewInChat(src){
   document.body.appendChild(overlay);
 }
 
-// Emoji panel toggle
+// Emoji toggle
 function toggleEmojiPanel(){
-  if(!currentFriend) return; // Only allow if friend selected
+  if(!currentFriend) return;
   emojiPanel.style.display = (emojiPanel.style.display === "block") ? "none" : "block";
 }
 
