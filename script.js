@@ -2,11 +2,8 @@ const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("overlay");
 const chatArea = document.getElementById("chatArea");
 const messageInput = document.getElementById("messageInput");
-const sendBtn = document.getElementById("sendBtn");
-const emojiBtn = document.querySelector(".emoji-btn");
-const attachBtn = document.querySelector(".attach-btn");
-const fileInput = document.getElementById("fileInput");
 const emojiPanel = document.getElementById("emojiPanel");
+const fileInput = document.getElementById("fileInput");
 let currentFriend = null;
 
 // Sample emojis
@@ -19,17 +16,17 @@ emojis.forEach(e => {
 });
 
 // Sidebar toggle
-function toggleSidebar(){
-  sidebar.classList.toggle("hidden");
+function toggleSidebar() {
+  sidebar.classList.toggle("show");
   overlay.classList.toggle("active");
 }
-function hideSidebar(){
-  sidebar.classList.add("hidden");
+function hideSidebar() {
+  sidebar.classList.remove("show");
   overlay.classList.remove("active");
 }
 
 // Add friend
-function openAddFriendModal(){
+function openAddFriendModal() {
   const name = prompt("Enter friend's name:");
   if(!name) return;
   const li = document.createElement("li");
@@ -39,45 +36,35 @@ function openAddFriendModal(){
 }
 
 // Select friend
-function selectFriend(name){
+function selectFriend(name) {
   currentFriend = name;
   document.getElementById("chatWith").innerText = "Chat with " + name;
   chatArea.innerHTML = "";
   hideSidebar();
-  // Enable chat
-  messageInput.disabled = false;
-  sendBtn.disabled = false;
-  emojiBtn.disabled = false;
-  attachBtn.disabled = false;
 }
 
 // Send message
-function sendMessage(){
+function sendMessage() {
   if(!currentFriend) return;
   const text = messageInput.value.trim();
   if(!text) return;
-
-  addMessage(text,"sent",null);
+  addMessage(text,"sent");
   messageInput.value = "";
-
-  // Fake reply
   setTimeout(() => {
-    addMessage("Reply to: "+text,"received",null);
+    addMessage("Reply to: "+text,"received");
   },1000);
 }
 
-// Add message (text or image/file)
+// Add message
 function addMessage(text,type,file=null){
   const msg = document.createElement("div");
   msg.className = "message " + type;
-
   if(file){
     const img = document.createElement("img");
     img.src = file;
     img.className = "previewImg";
     img.onclick = () => previewInChat(file);
     msg.appendChild(img);
-
     if(text){
       const label = document.createElement("div");
       label.textContent = text;
@@ -90,45 +77,42 @@ function addMessage(text,type,file=null){
     txt.textContent = text;
     msg.appendChild(txt);
   }
-
   const timestamp = document.createElement("div");
   const now = new Date();
   timestamp.className = "timestamp";
   timestamp.textContent = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
   msg.appendChild(timestamp);
-
   chatArea.appendChild(msg);
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-// Preview file/image before sending
+// Preview file/image
 function previewFile(input){
   const file = input.files[0];
   if(!file || !currentFriend) return;
   const reader = new FileReader();
-  reader.onload = e => {
-    addMessage("", "sent", e.target.result);
-  };
+  reader.onload = e => addMessage("", "sent", e.target.result);
   reader.readAsDataURL(file);
 }
 
-// Preview image in chat overlay
+// Preview image overlay
 function previewInChat(src){
   const overlay = document.createElement("div");
   overlay.className = "chatOverlay";
-
   const img = document.createElement("img");
   img.src = src;
   overlay.appendChild(img);
-
   overlay.onclick = () => overlay.remove();
   document.body.appendChild(overlay);
 }
 
-// Emoji panel toggle & auto-close
+// Emoji panel toggle
 function toggleEmojiPanel(){
   emojiPanel.style.display = emojiPanel.style.display==="block"?"none":"block";
 }
+
+// Close emoji when clicking outside
 document.addEventListener("click",(e)=>{
-  if(!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)) emojiPanel.style.display = "none";
+  if(!emojiPanel.contains(e.target) && !e.target.classList.contains("emoji-btn"))
+    emojiPanel.style.display = "none";
 });
