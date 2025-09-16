@@ -1,23 +1,17 @@
-let currentFriend=null;
-let messagesData=[];
-let contactsList=[];
+let currentFriend = null;
+let messagesData = [];
+let contactsList = [];
 
 // Sidebar toggle
 function toggleSidebar(show=null){
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
-
-  if(show===true){ 
-    sidebar.classList.add("active"); 
-    overlay.classList.add("active"); 
-  }
-  else if(show===false){ 
-    sidebar.classList.remove("active"); 
-    overlay.classList.remove("active"); 
-  }
-  else { 
-    sidebar.classList.toggle("active"); 
-    overlay.classList.toggle("active"); 
+  if(window.innerWidth <= 600){
+    if(show===true){ sidebar.classList.add("active"); overlay.classList.add("active"); }
+    else if(show===false){ sidebar.classList.remove("active"); overlay.classList.remove("active"); }
+    else { sidebar.classList.toggle("active"); overlay.classList.toggle("active"); }
+  } else {
+    sidebar.classList.toggle("active"); // For desktop, use same active toggle
   }
 }
 
@@ -44,7 +38,10 @@ function addFriend(name){
   span.textContent=name;
   li.appendChild(span);
 
-  li.onclick=()=>{ openChat(name,img.src); toggleSidebar(false); };
+  li.onclick=()=>{
+    openChat(name,img.src); 
+    if(window.innerWidth<=600) toggleSidebar(false);
+  };
   contactsUl.appendChild(li);
 }
 
@@ -72,7 +69,7 @@ function sendMessage(){
 function addMessage(sender,text,type,status=""){
   const chatBox=document.getElementById("chat-box");
   const msg=document.createElement("div");
-  msg.classList.add("message",type);
+  msg.classList.add("message",type); // Must be "user" or "bot"
   msg.innerHTML=text;
 
   const timestamp=document.createElement("div");
@@ -88,7 +85,7 @@ function addMessage(sender,text,type,status=""){
   }
 
   chatBox.appendChild(msg);
-  chatBox.scrollTop=chatBox.scrollHeight;
+  chatBox.scrollTop = chatBox.scrollHeight;
   messagesData.push(msg);
 }
 
