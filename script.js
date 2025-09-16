@@ -1,190 +1,145 @@
-let currentFriend = null;
-let messagesData = [];
-let contactsList = [];
+let currentFriend=null;
+let messagesData=[];
+let contactsList=[];
 
-// --- Sidebar toggle ---
-function toggleSidebar(force = null) {
-  const sidebar = document.getElementById("sidebar");
-  if (force === true) {
-    sidebar.classList.add("active");
-  } else if (force === false) {
-    sidebar.classList.remove("active");
+// Sidebar toggle: mobile slide or desktop collapse
+function toggleSidebar(show=null){
+  const sidebar=document.getElementById("sidebar");
+  const overlay=document.getElementById("overlay");
+
+  if(window.innerWidth <= 600){
+    if(show===true){ sidebar.classList.add("active"); overlay.classList.add("active"); }
+    else if(show===false){ sidebar.classList.remove("active"); overlay.classList.remove("active"); }
+    else{ sidebar.classList.toggle("active"); overlay.classList.toggle("active"); }
   } else {
-    sidebar.classList.toggle("active");
+    sidebar.classList.toggle("collapsed");
   }
 }
 
-// --- Go Back (mobile) ---
-function goBack() {
-  currentFriend = null;
-  document.getElementById("chat-header").innerHTML =
-    '<button id="back-btn" class="back-btn" onclick="goBack()">←</button><span>Select a friend to start chat</span>';
-  document.getElementById("chat-box").innerHTML = "";
-  toggleSidebar(true); // reopen sidebar
+// Add friend
+function requestMobileContacts(){
+  const contacts=["Alice","Bob","Charlie","David"];
+  const selected=prompt(`Select contact: ${contacts.join(", ")}`);
+  if(selected && contacts.includes(selected)) addFriend(selected);
+  else alert("No valid contact selected");
 }
 
-// --- Add Friend (mobile contact simulation) ---
-function requestMobileContacts() {
-  const allow = confirm("Allow PetalPing to access your mobile contacts?");
-  if (!allow) return;
-
-  const mobileContacts = ["Alice", "Bob", "Charlie", "David"];
-  const selected = prompt(`Select contact by typing name from: ${mobileContacts.join(", ")}`);
-  if (selected && mobileContacts.includes(selected)) {
-    addFriend(selected);
-  } else {
-    alert("No valid contact selected");
-  }
-}
-
-function addFriend(name) {
-  if (!name) return;
-  if (contactsList.includes(name)) return;
-
+function addFriend(name){
+  if(!name || contactsList.includes(name)) return;
   contactsList.push(name);
 
-  const contacts = document.getElementById("contacts");
-  const li = document.createElement("li");
-  const img = document.createElement("img");
-  img.src = `https://via.placeholder.com/40/${Math.floor(Math.random() * 999999)}`;
-  img.onclick = () => openProfile(name, img.src);
+  const contactsUl=document.getElementById("contacts");
+  const li=document.createElement("li");
+  const img=document.createElement("img");
+  img.src=`https://via.placeholder.com/40/${Math.floor(Math.random()*999999)}`;
+  img.onclick=()=>openProfile(name,img.src);
   li.appendChild(img);
 
-  const span = document.createElement("span");
-  span.textContent = name;
+  const span=document.createElement("span");
+  span.textContent=name;
   li.appendChild(span);
 
-  li.onclick = () => {
-    openChat(name, img.src);
-    if (window.innerWidth <= 600) toggleSidebar(false); // auto-close sidebar on mobile
-  };
-
-  contacts.appendChild(li);
+  li.onclick=()=>{ openChat(name,img.src); if(window.innerWidth<=600) toggleSidebar(false); };
+  contactsUl.appendChild(li);
 }
 
-// --- Open Chat ---
-function openChat(friend, profileUrl) {
-  currentFriend = friend;
-  const header = document.getElementById("chat-header");
-  header.innerHTML = `
-    <button id="back-btn" class="back-btn" onclick="goBack()">←</button>
-    <img src="${profileUrl}" onclick="openProfile('${friend}','${profileUrl}')">
-    <span>${friend}</span>`;
-  document.getElementById("chat-box").innerHTML = "";
-  messagesData = [];
+// Open chat
+function openChat(friend,url){
+  currentFriend=friend;
+  const header=document.getElementById("chat-header");
+  header.innerHTML=`<img src="${url}" onclick="openProfile('${friend}','${url}')"><span>${friend}</span>`;
+  document.getElementById("chat-box").innerHTML="";
+  messagesData=[];
 }
 
-// --- Send Message ---
-function sendMessage() {
-  const input = document.getElementById("message");
-  if (!currentFriend) {
-    alert("Select a friend first!");
-    return;
-  }
-  if (input.value.trim()) {
-    addMessage("You", input.value, "user", "⏳");
-    setTimeout(() => updateLastMessageStatus("✓"), 1000);
-    setTimeout(() => addMessage(currentFriend, `Reply: "${input.value}"`, "bot"), 1500);
-    input.value = "";
+// Send message
+function sendMessage(){
+  const input=document.getElementById("message");
+  if(!currentFriend){ alert("Select a friend first!"); return; }
+  if(input.value.trim()){
+    addMessage("You",input.value,"user","⏳");
+    setTimeout(()=>updateLastMessageStatus("✓"),1000);
+    setTimeout(()=>addMessage(currentFriend,`Reply: "${input.value}"`,"bot"),1500);
+    input.value="";
   }
 }
 
-function addMessage(sender, text, type, status = "") {
-  const chatBox = document.getElementById("chat-box");
-  const msg = document.createElement("div");
-  msg.classList.add("message", type);
-  msg.innerHTML = text;
+function addMessage(sender,text,type,status=""){
+  const chatBox=document.getElementById("chat-box");
+  const msg=document.createElement("div");
+  msg.classList.add("message",type);
+  msg.innerHTML=text;
 
-  const timestamp = document.createElement("div");
-  timestamp.className = "timestamp";
-  timestamp.textContent = new Date().toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const timestamp=document.createElement("div");
+  timestamp.className="timestamp";
+  timestamp.textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   msg.appendChild(timestamp);
 
-  if (status) {
-    const span = document.createElement("span");
-    span.className = "status";
-    span.textContent = status;
+  if(status){
+    const span=document.createElement("span");
+    span.className="status";
+    span.textContent=status;
     msg.appendChild(span);
   }
 
   chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop=chatBox.scrollHeight;
   messagesData.push(msg);
 }
 
-function updateLastMessageStatus(status) {
-  for (let i = messagesData.length - 1; i >= 0; i--) {
-    if (messagesData[i].classList.contains("user")) {
-      const span = messagesData[i].querySelector(".status");
-      if (span) span.textContent = status;
+function updateLastMessageStatus(status){
+  for(let i=messagesData.length-1;i>=0;i--){
+    if(messagesData[i].classList.contains("user")){
+      const span=messagesData[i].querySelector(".status");
+      if(span) span.textContent=status;
       break;
     }
   }
 }
 
-// --- Profile Modal ---
-function openProfile(name, url) {
-  const modal = document.getElementById("profile-modal");
-  modal.style.display = "flex";
-  document.getElementById("profile-name").textContent = name;
-  document.getElementById("profile-pic-large").src = url;
+// Profile modal
+function openProfile(name,url){
+  const modal=document.getElementById("profile-modal");
+  modal.style.display="flex";
+  document.getElementById("profile-name").textContent=name;
+  document.getElementById("profile-pic-large").src=url;
 }
-function closeProfile() {
-  document.getElementById("profile-modal").style.display = "none";
-}
+function closeProfile(){ document.getElementById("profile-modal").style.display="none"; }
 
-// --- Emoji Panel ---
-const emojiCategories = {
-  Smileys: ["😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😋","😎","😍","😘","🥰","😗","😙","😚"],
-  Animals: ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐨","🐯","🦁","🐮"],
-  Food: ["🍏","🍎","🍐","🍊","🍋","🍌","🍉","🍇","🍓","🫐","🍒"],
-  Travel: ["🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐"],
-  Activities: ["⚽","🏀","🏈","⚾","🥎","🎾","🏐","🏉"],
-  Objects: ["⌚","📱","💻","⌨️","🖥️","🖨️","🖱️"],
-  Symbols: ["❤️","🧡","💛","💚","💙","💜","🤎","🖤","🤍","💔","❣️"],
-  Flags: ["🇺🇸","🇬🇧","🇨🇦","🇮🇳","🇫🇷","🇩🇪","🇯🇵","🇨🇳"]
+// Emoji panel
+const emojiCategories={
+  Smileys:["😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😋","😎","😍","😘","🥰"],
+  Animals:["🐶","🐱","🐭","🐹","🐰","🦊"],
+  Food:["🍏","🍎","🍐","🍊","🍋","🍌","🍉"]
 };
-let currentEmojiCategory = "Smileys";
+let currentEmojiCategory="Smileys";
 
-function toggleEmojiPanel() {
-  const panel = document.getElementById("emoji-panel");
-  panel.style.display = panel.style.display === "flex" ? "none" : "flex";
-  if (panel.style.display === "flex") {
-    generateEmojis();
-  }
+function toggleEmojiPanel(){
+  const panel=document.getElementById("emoji-panel");
+  panel.style.display=panel.style.display==="flex"?"none":"flex";
+  if(panel.style.display==="flex") generateEmojis();
 }
 
-function generateEmojis() {
-  const tabs = document.getElementById("emoji-tabs");
-  const grid = document.getElementById("emoji-grid");
-  tabs.innerHTML = "";
-  grid.innerHTML = "";
+function generateEmojis(){
+  const tabs=document.getElementById("emoji-tabs");
+  const grid=document.getElementById("emoji-grid");
+  tabs.innerHTML=""; grid.innerHTML="";
 
-  Object.keys(emojiCategories).forEach((cat) => {
-    const btn = document.createElement("button");
-    btn.textContent = cat;
-    btn.className = "tab-btn " + (cat === currentEmojiCategory ? "active" : "");
-    btn.onclick = () => {
-      currentEmojiCategory = cat;
-      generateEmojis();
-    };
+  Object.keys(emojiCategories).forEach(cat=>{
+    const btn=document.createElement("button");
+    btn.textContent=cat;
+    btn.className="tab-btn "+(cat===currentEmojiCategory?"active":"");
+    btn.onclick=()=>{ currentEmojiCategory=cat; generateEmojis(); };
     tabs.appendChild(btn);
   });
 
-  emojiCategories[currentEmojiCategory].forEach((e) => {
-    const span = document.createElement("span");
-    span.textContent = e;
-    span.onclick = () => {
-      document.getElementById("message").value += e;
-    };
+  emojiCategories[currentEmojiCategory].forEach(e=>{
+    const span=document.createElement("span");
+    span.textContent=e;
+    span.onclick=()=>{ document.getElementById("message").value+=e; };
     grid.appendChild(span);
   });
 }
 
-// --- File/Image ---
-function handleFile() {
-  alert("File/Image upload ready for mobile integration.");
-}
+// File/Image
+function handleFile(){ alert("File/Image upload ready for mobile integration."); }
