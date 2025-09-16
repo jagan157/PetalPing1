@@ -32,7 +32,10 @@
 
   <!-- Chat area -->
   <div class="chat-container">
-    <div class="chat-header" id="chat-header">Select a friend to start chat</div>
+    <div class="chat-header" id="chat-header">
+      <button id="back-btn" class="back-btn" onclick="goBack()">←</button>
+      <span>Select a friend to start chat</span>
+    </div>
     <div id="chat-box" class="chat-box"></div>
     <div class="chat-input-area">
       <button type="button" class="emoji-btn" onclick="toggleEmojiPanel()">😀</button>
@@ -63,4 +66,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-
