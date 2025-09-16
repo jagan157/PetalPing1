@@ -9,15 +9,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(reg => console.log("Service Worker registered:", reg))
-      .catch(err => console.error("SW registration failed:", err));
-  }
-</script>
   <!-- Sidebar -->
-  <div id="sidebar" class="sidebar hidden">
+  <div id="sidebar" class="sidebar">
     <h2>Friends</h2>
     <button class="add-btn" onclick="openAddFriendModal()">+ Add People</button>
     <ul id="friendList"></ul>
@@ -32,16 +25,14 @@
       <span class="menu-btn" onclick="toggleSidebar()">☰</span>
       <span id="chatWith">Select a friend</span>
     </div>
-    <div class="chat-area" id="chatArea" onclick="hideSidebar()"></div>
-
+    <div class="chat-area" id="chatArea"></div>
     <div class="chat-input">
-      <button class="emoji-btn" onclick="toggleEmojiPanel()" disabled>🌈</button>
-      <button class="attach-btn" onclick="document.getElementById('fileInput').click()" disabled>🧷</button>
+      <button class="emoji-btn" onclick="toggleEmojiPanel()">🌈</button>
+      <button class="attach-btn" onclick="fileInput.click()">🧷</button>
       <input type="file" id="fileInput" style="display:none" onchange="previewFile(this)">
-      <input type="text" id="messageInput" placeholder="Type a message..." disabled>
-      <button id="sendBtn" onclick="sendMessage()" disabled>🕊️</button>
+      <input type="text" id="messageInput" placeholder="Type a message...">
+      <button id="sendBtn" onclick="sendMessage()">🕊️</button>
     </div>
-
     <!-- Emoji Panel -->
     <div id="emojiPanel" class="emoji-panel"></div>
   </div>
@@ -49,4 +40,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
