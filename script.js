@@ -1,151 +1,134 @@
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const chatArea = document.getElementById("chatArea");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const emojiBtn = document.querySelector(".emoji-btn");
+const attachBtn = document.querySelector(".attach-btn");
+const fileInput = document.getElementById("fileInput");
+const emojiPanel = document.getElementById("emojiPanel");
 let currentFriend = null;
-let messagesData = [];
-let contactsList = [];
+
+// Sample emojis
+const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😉","😊","😋","😎","😍","😘","🥰"];
+emojis.forEach(e => {
+  const span = document.createElement("span");
+  span.textContent = e;
+  span.onclick = () => { if(currentFriend) messageInput.value += e; };
+  emojiPanel.appendChild(span);
+});
 
 // Sidebar toggle
-function toggleSidebar(show=null){
-  const sidebar = document.getElementById("sidebar");
-  const overlay = document.getElementById("overlay");
-  if(window.innerWidth <= 600){
-    if(show===true){ sidebar.classList.add("active"); overlay.classList.add("active"); }
-    else if(show===false){ sidebar.classList.remove("active"); overlay.classList.remove("active"); }
-    else { sidebar.classList.toggle("active"); overlay.classList.toggle("active"); }
-  } else {
-    sidebar.classList.toggle("active"); 
-  }
+function toggleSidebar(){
+  sidebar.classList.toggle("hidden");
+  overlay.classList.toggle("active");
+}
+function hideSidebar(){
+  sidebar.classList.add("hidden");
+  overlay.classList.remove("active");
 }
 
 // Add friend
-function requestMobileContacts(){
-  const contacts=["Alice","Bob","Charlie","David"];
-  const selected=prompt(`Select contact: ${contacts.join(", ")}`);
-  if(selected && contacts.includes(selected)) addFriend(selected);
-  else alert("No valid contact selected");
+function openAddFriendModal(){
+  const name = prompt("Enter friend's name:");
+  if(!name) return;
+  const li = document.createElement("li");
+  li.innerHTML = `<span>${name}</span>`;
+  li.onclick = () => selectFriend(name);
+  document.getElementById("friendList").appendChild(li);
 }
 
-function addFriend(name){
-  if(!name || contactsList.includes(name)) return;
-  contactsList.push(name);
-
-  const contactsUl=document.getElementById("contacts");
-  const li=document.createElement("li");
-  const img=document.createElement("img");
-  img.src=`https://via.placeholder.com/40/${Math.floor(Math.random()*999999)}`;
-  img.onclick=()=>openProfile(name,img.src);
-  li.appendChild(img);
-
-  const span=document.createElement("span");
-  span.textContent=name;
-  li.appendChild(span);
-
-  li.onclick=()=>{
-    openChat(name,img.src); 
-  };
-  contactsUl.appendChild(li);
-}
-
-// Open chat
-function openChat(friend,url){
-  currentFriend = friend;
-  const header = document.getElementById("chat-header");
-  header.innerHTML = `<button class="menu-btn" onclick="toggleSidebar()">☰</button><span>${friend}</span>`;
-  document.getElementById("chat-box").innerHTML = "";
-  messagesData = [];
-
-  // Auto-hide sidebar on mobile
-  if(window.innerWidth <= 600){
-    toggleSidebar(false);
-  }
+// Select friend
+function selectFriend(name){
+  currentFriend = name;
+  document.getElementById("chatWith").innerText = "Chat with " + name;
+  chatArea.innerHTML = "";
+  hideSidebar();
+  // Enable chat
+  messageInput.disabled = false;
+  sendBtn.disabled = false;
+  emojiBtn.disabled = false;
+  attachBtn.disabled = false;
 }
 
 // Send message
 function sendMessage(){
-  const input=document.getElementById("message");
-  if(!currentFriend){ alert("Select a friend first!"); return; }
-  if(input.value.trim()){
-    addMessage("You",input.value,"user","⏳");
-    setTimeout(()=>updateLastMessageStatus("✓"),1000);
-    setTimeout(()=>addMessage(currentFriend,`Reply: "${input.value}"`,"bot"),1500);
-    input.value="";
-  }
+  if(!currentFriend) return;
+  const text = messageInput.value.trim();
+  if(!text) return;
+
+  addMessage(text,"sent",null);
+  messageInput.value = "";
+
+  // Fake reply
+  setTimeout(() => {
+    addMessage("Reply to: "+text,"received",null);
+  },1000);
 }
 
-function addMessage(sender,text,type,status=""){
-  const chatBox=document.getElementById("chat-box");
-  const msg=document.createElement("div");
-  msg.classList.add("message",type);
-  msg.innerHTML=text;
+// Add message (text or image/file)
+function addMessage(text,type,file=null){
+  const msg = document.createElement("div");
+  msg.className = "message " + type;
 
-  const timestamp=document.createElement("div");
-  timestamp.className="timestamp";
-  timestamp.textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  if(file){
+    const img = document.createElement("img");
+    img.src = file;
+    img.className = "previewImg";
+    img.onclick = () => previewInChat(file);
+    msg.appendChild(img);
+
+    if(text){
+      const label = document.createElement("div");
+      label.textContent = text;
+      label.style.fontSize = "12px";
+      label.style.marginTop = "3px";
+      msg.appendChild(label);
+    }
+  } else {
+    const txt = document.createElement("div");
+    txt.textContent = text;
+    msg.appendChild(txt);
+  }
+
+  const timestamp = document.createElement("div");
+  const now = new Date();
+  timestamp.className = "timestamp";
+  timestamp.textContent = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
   msg.appendChild(timestamp);
 
-  if(status){
-    const span=document.createElement("span");
-    span.className="status";
-    span.textContent=status;
-    msg.appendChild(span);
-  }
-
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
-  messagesData.push(msg);
+  chatArea.appendChild(msg);
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-function updateLastMessageStatus(status){
-  for(let i=messagesData.length-1;i>=0;i--){
-    if(messagesData[i].classList.contains("user")){
-      const span=messagesData[i].querySelector(".status");
-      if(span) span.textContent=status;
-      break;
-    }
-  }
+// Preview file/image before sending
+function previewFile(input){
+  const file = input.files[0];
+  if(!file || !currentFriend) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    addMessage("", "sent", e.target.result);
+  };
+  reader.readAsDataURL(file);
 }
 
-// Profile modal
-function openProfile(name,url){
-  const modal=document.getElementById("profile-modal");
-  modal.style.display="flex";
-  document.getElementById("profile-name").textContent=name;
-  document.getElementById("profile-pic-large").src=url;
+// Preview image in chat overlay
+function previewInChat(src){
+  const overlay = document.createElement("div");
+  overlay.className = "chatOverlay";
+
+  const img = document.createElement("img");
+  img.src = src;
+  overlay.appendChild(img);
+
+  overlay.onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
 }
-function closeProfile(){ document.getElementById("profile-modal").style.display="none"; }
 
-// Emoji panel
-const emojiCategories={
-  Smileys:["😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😋","😎","😍","😘","🥰"],
-  Animals:["🐶","🐱","🐭","🐹","🐰","🦊"],
-  Food:["🍏","🍎","🍐","🍊","🍋","🍌","🍉"]
-};
-let currentEmojiCategory="Smileys";
-
+// Emoji panel toggle & auto-close
 function toggleEmojiPanel(){
-  const panel=document.getElementById("emoji-panel");
-  panel.style.display=panel.style.display==="flex"?"none":"flex";
-  if(panel.style.display==="flex") generateEmojis();
+  emojiPanel.style.display = emojiPanel.style.display==="block"?"none":"block";
 }
-
-function generateEmojis(){
-  const tabs=document.getElementById("emoji-tabs");
-  const grid=document.getElementById("emoji-grid");
-  tabs.innerHTML=""; grid.innerHTML="";
-
-  Object.keys(emojiCategories).forEach(cat=>{
-    const btn=document.createElement("button");
-    btn.textContent=cat;
-    btn.className="tab-btn "+(cat===currentEmojiCategory?"active":"");
-    btn.onclick=()=>{ currentEmojiCategory=cat; generateEmojis(); };
-    tabs.appendChild(btn);
-  });
-
-  emojiCategories[currentEmojiCategory].forEach(e=>{
-    const span=document.createElement("span");
-    span.textContent=e;
-    span.onclick=()=>{ document.getElementById("message").value+=e; };
-    grid.appendChild(span);
-  });
-}
-
-// File/Image
-function handleFile(){ alert("File/Image upload ready for mobile integration."); }
+document.addEventListener("click",(e)=>{
+  if(!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)) emojiPanel.style.display = "none";
+});
