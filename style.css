@@ -15,7 +15,7 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
   position:relative;
 }
 
-/* Sidebar - hidden by default */
+/* Sidebar */
 .sidebar {
   position:absolute;
   top:0; left:0; bottom:0;
@@ -29,11 +29,7 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
   z-index:20;
   overflow-y:auto;
 }
-
-/* Sidebar active */
-.sidebar.active {
-  transform: translateX(0);
-}
+.sidebar.active { transform: translateX(0); }
 
 /* Overlay */
 .overlay {
@@ -58,8 +54,9 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
   background: rgba(255,255,255,0.95); 
   gap:10px;
 }
+.chat-header span { flex:1; }
 
-/* Menu button inside chat header */
+/* Menu button */
 .chat-header .menu-btn {
   width:30px;
   height:30px;
@@ -84,7 +81,7 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
 .sidebar ul li { display:flex; align-items:center; padding:10px; border-bottom:1px solid rgba(255,255,255,0.2); cursor:pointer; transition: all 0.3s ease; }
 .sidebar ul li img { width:40px; height:40px; border-radius:50%; margin-right:10px; }
 
-/* Chat box & input */
+/* Chat box */
 .chat-box { 
   flex:1; 
   padding:10px; 
@@ -106,24 +103,20 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
   display:inline-block;
   position:relative;
 }
-
-/* User message - right aligned */
 .message.user {
   background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
   color:white;
   margin-left:auto;
+  margin-right:5px;
   text-align:right;
 }
-
-/* Bot message - left aligned */
 .message.bot {
   background: rgba(220,220,220,0.85);
   color:black;
   margin-right:auto;
+  margin-left:5px;
   text-align:left;
 }
-
-/* Timestamps and status */
 .message .timestamp {
   font-size:11px;
   color:#777;
@@ -134,11 +127,9 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
   color:rgba(0,0,0,0.45);
   margin-top:2px;
 }
-.message.user .status {
-  color:rgba(255,255,255,0.7);
-}
+.message.user .status { color:rgba(255,255,255,0.7); }
 
-/* Chat input area */
+/* Chat input */
 .chat-input-area { flex-shrink:0; display:flex; align-items:center; padding:8px 12px; background:rgba(255,255,255,0.95); border-top:1px solid #ccc; position:sticky; bottom:0; z-index:20; }
 .chat-input-area input[type=text] { flex:1; padding:10px 12px; border:none; outline:none; border-radius:20px; background:#f0f2f5; font-size:14px; margin:0 8px; }
 .emoji-btn, .attach-btn { font-size:20px; background:none; border:none; cursor:pointer; }
