@@ -2,17 +2,22 @@ let currentFriend=null;
 let messagesData=[];
 let contactsList=[];
 
-// Sidebar toggle: mobile slide or desktop collapse
+// Sidebar toggle
 function toggleSidebar(show=null){
-  const sidebar=document.getElementById("sidebar");
-  const overlay=document.getElementById("overlay");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("overlay");
 
-  if(window.innerWidth <= 600){
-    if(show===true){ sidebar.classList.add("active"); overlay.classList.add("active"); }
-    else if(show===false){ sidebar.classList.remove("active"); overlay.classList.remove("active"); }
-    else{ sidebar.classList.toggle("active"); overlay.classList.toggle("active"); }
-  } else {
-    sidebar.classList.toggle("collapsed");
+  if(show===true){ 
+    sidebar.classList.add("active"); 
+    overlay.classList.add("active"); 
+  }
+  else if(show===false){ 
+    sidebar.classList.remove("active"); 
+    overlay.classList.remove("active"); 
+  }
+  else { 
+    sidebar.classList.toggle("active"); 
+    overlay.classList.toggle("active"); 
   }
 }
 
@@ -39,7 +44,7 @@ function addFriend(name){
   span.textContent=name;
   li.appendChild(span);
 
-  li.onclick=()=>{ openChat(name,img.src); if(window.innerWidth<=600) toggleSidebar(false); };
+  li.onclick=()=>{ openChat(name,img.src); toggleSidebar(false); };
   contactsUl.appendChild(li);
 }
 
@@ -47,7 +52,7 @@ function addFriend(name){
 function openChat(friend,url){
   currentFriend=friend;
   const header=document.getElementById("chat-header");
-  header.innerHTML=`<img src="${url}" onclick="openProfile('${friend}','${url}')"><span>${friend}</span>`;
+  header.innerHTML=`<button class="menu-btn" onclick="toggleSidebar()">☰</button><span>${friend}</span>`;
   document.getElementById("chat-box").innerHTML="";
   messagesData=[];
 }
