@@ -162,6 +162,16 @@ body, html {
   cursor: pointer;
 }
 
+/* Disabled input/buttons before selecting friend */
+.chat-input input:disabled {
+  background: #eee;
+  cursor: not-allowed;
+}
+.chat-input button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Emoji panel */
 .emoji-panel {
   display: none;
