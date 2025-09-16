@@ -158,3 +158,13 @@ body { margin:0; font-family: Helvetica, Arial, sans-serif; }
 .profile-content { background:white; padding:20px; border-radius:10px; text-align:center; width:300px; position:relative; }
 .profile-content img { width:120px; height:120px; border-radius:50%; margin-bottom:10px; }
 .close-btn { position:absolute; top:5px; right:10px; font-size:24px; cursor:pointer; }
+
+/* Mobile adjustments */
+@media(max-width:600px){
+  .chat-box { padding:8px; }
+  .message.user { margin-left:auto; margin-right:5px; }
+  .message.bot { margin-right:auto; margin-left:5px; }
+  .chat-header span { font-size:14px; }
+  .chat-input-area input[type=text] { font-size:14px; }
+  .chat-header .menu-btn { width:28px; height:28px; font-size:16px; }
+}
