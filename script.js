@@ -11,7 +11,7 @@ function toggleSidebar(show=null){
     else if(show===false){ sidebar.classList.remove("active"); overlay.classList.remove("active"); }
     else { sidebar.classList.toggle("active"); overlay.classList.toggle("active"); }
   } else {
-    sidebar.classList.toggle("active"); // For desktop, use same active toggle
+    sidebar.classList.toggle("active"); 
   }
 }
 
@@ -40,18 +40,22 @@ function addFriend(name){
 
   li.onclick=()=>{
     openChat(name,img.src); 
-    if(window.innerWidth<=600) toggleSidebar(false);
   };
   contactsUl.appendChild(li);
 }
 
 // Open chat
 function openChat(friend,url){
-  currentFriend=friend;
-  const header=document.getElementById("chat-header");
-  header.innerHTML=`<button class="menu-btn" onclick="toggleSidebar()">☰</button><span>${friend}</span>`;
-  document.getElementById("chat-box").innerHTML="";
-  messagesData=[];
+  currentFriend = friend;
+  const header = document.getElementById("chat-header");
+  header.innerHTML = `<button class="menu-btn" onclick="toggleSidebar()">☰</button><span>${friend}</span>`;
+  document.getElementById("chat-box").innerHTML = "";
+  messagesData = [];
+
+  // Auto-hide sidebar on mobile
+  if(window.innerWidth <= 600){
+    toggleSidebar(false);
+  }
 }
 
 // Send message
@@ -69,7 +73,7 @@ function sendMessage(){
 function addMessage(sender,text,type,status=""){
   const chatBox=document.getElementById("chat-box");
   const msg=document.createElement("div");
-  msg.classList.add("message",type); // Must be "user" or "bot"
+  msg.classList.add("message",type);
   msg.innerHTML=text;
 
   const timestamp=document.createElement("div");
