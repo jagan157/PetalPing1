@@ -1,70 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ff69b4">
-<link rel="manifest" href="manifest.json">
-<title>PetalPing</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <title>PetalPing Chat</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<script>
+  <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js")
       .then(reg => console.log("Service Worker registered:", reg))
       .catch(err => console.error("SW registration failed:", err));
   }
 </script>
-
-<div class="app-container">
-
   <!-- Sidebar -->
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h2>PetalPing</h2>
-    </div>
-    <button class="add-btn" onclick="requestMobileContacts()">+ Add People</button>
-    <ul id="contacts"></ul>
+  <div id="sidebar" class="sidebar hidden">
+    <h2>Friends</h2>
+    <button class="add-btn" onclick="openAddFriendModal()">+ Add People</button>
+    <ul id="friendList"></ul>
   </div>
 
   <!-- Overlay -->
-  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+  <div id="overlay" class="overlay" onclick="hideSidebar()"></div>
 
-  <!-- Chat area -->
-  <div class="chat-container">
-    <div class="chat-header" id="chat-header">
-      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-      <span>Select a friend to start chat</span>
+  <!-- Chat Section -->
+  <div class="chat">
+    <div class="chat-header">
+      <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+      <span id="chatWith">Select a friend</span>
     </div>
-    <div id="chat-box" class="chat-box"></div>
-    <div class="chat-input-area">
-      <button type="button" class="emoji-btn" onclick="toggleEmojiPanel()">😀</button>
-      <button type="button" class="attach-btn" onclick="document.getElementById('file-input').click()">📎</button>
-      <input type="file" id="file-input" style="display:none" onchange="handleFile(event)">
-      <input type="text" id="message" placeholder="Type a message">
-      <button type="button" class="send-btn" onclick="sendMessage()">➤</button>
+    <div class="chat-area" id="chatArea" onclick="hideSidebar()"></div>
+
+    <div class="chat-input">
+      <button class="emoji-btn" onclick="toggleEmojiPanel()" disabled>🌈</button>
+      <button class="attach-btn" onclick="document.getElementById('fileInput').click()" disabled>🧷</button>
+      <input type="file" id="fileInput" style="display:none" onchange="previewFile(this)">
+      <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+      <button id="sendBtn" onclick="sendMessage()" disabled>🕊️</button>
     </div>
 
-    <!-- Emoji panel -->
-    <div id="emoji-panel" class="emoji-panel">
-      <div id="emoji-tabs" class="emoji-tabs"></div>
-      <div id="emoji-grid" class="emoji-grid"></div>
-    </div>
+    <!-- Emoji Panel -->
+    <div id="emojiPanel" class="emoji-panel"></div>
   </div>
-</div>
 
-<!-- Profile Modal -->
-<div id="profile-modal" class="profile-modal">
-  <div class="profile-content">
-    <span class="close-btn" onclick="closeProfile()">&times;</span>
-    <img id="profile-pic-large" src="" alt="Profile">
-    <h2 id="profile-name"></h2>
-    <p id="profile-status">Hey there! I am using PetalPing.</p>
-  </div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
