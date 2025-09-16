@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <script>
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("service-worker.js")
@@ -26,16 +27,15 @@
       <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
     </div>
     <button class="add-btn" id="add-btn" onclick="requestMobileContacts()">+ Add People</button>
-    <button class="add-icon-btn" id="add-icon-btn" onclick="requestMobileContacts()">➕</button>
     <ul id="contacts"></ul>
   </div>
 
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+
   <!-- Chat area -->
   <div class="chat-container">
-    <div class="chat-header" id="chat-header">
-      <button id="back-btn" class="back-btn" onclick="goBack()">←</button>
-      <span>Select a friend to start chat</span>
-    </div>
+    <div class="chat-header" id="chat-header">Select a friend to start chat</div>
     <div id="chat-box" class="chat-box"></div>
     <div class="chat-input-area">
       <button type="button" class="emoji-btn" onclick="toggleEmojiPanel()">😀</button>
