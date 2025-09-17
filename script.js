@@ -28,6 +28,13 @@ document.addEventListener("DOMContentLoaded", () => {
     sidebar.classList.remove("show");
     overlay.classList.remove("active");
   }
+  window.toggleSidebar = toggleSidebar;
+  window.hideSidebar = hideSidebar;
+
+  // Fix Chrome mobile transform
+  setTimeout(() => {
+    sidebar.style.transform = sidebar.classList.contains("show") ? "translateX(0)" : "translateX(-100%)";
+  }, 50);
 
   // Add friend
   window.openAddFriendModal = function() {
@@ -49,14 +56,12 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollChatToBottom();
   }
 
-  // Enable/disable chat inputs
+  // Enable/disable chat
   function enableChat(enable) {
     messageInput.disabled = !enable;
     sendBtn.disabled = !enable;
     emojiBtn.disabled = !enable;
     attachBtn.disabled = !enable;
-
-    // Ensure inputs are displayed (fix Chrome mobile rendering)
     messageInput.style.display = "inline-block";
     sendBtn.style.display = "inline-block";
     emojiBtn.style.display = "inline-block";
@@ -72,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     messageInput.value = "";
     scrollChatToBottom();
     setTimeout(() => {
-      addMessage("Reply to: "+text, "received", null);
+      addMessage("Reply to: " + text, "received", null);
       scrollChatToBottom();
     }, 1000);
   }
@@ -81,7 +86,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function addMessage(text, type, file=null) {
     const msg = document.createElement("div");
     msg.className = "message " + type;
-
     if(file){
       const img = document.createElement("img");
       img.src = file;
@@ -100,13 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
       txt.textContent = text;
       msg.appendChild(txt);
     }
-
     const timestamp = document.createElement("div");
     const now = new Date();
     timestamp.className = "timestamp";
     timestamp.textContent = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     msg.appendChild(timestamp);
-
     chatArea.appendChild(msg);
     scrollChatToBottom();
   }
@@ -131,28 +133,22 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(overlayDiv);
   }
 
-  // Emoji panel toggle
-  window.toggleEmojiPanel = function(){
+  // Emoji toggle
+  window.toggleEmojiPanel = function() {
     emojiPanel.classList.toggle("active");
   }
   document.addEventListener("click", (e) => {
-    if(!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)){
+    if(!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)) {
       emojiPanel.classList.remove("active");
     }
   });
 
-  // Scroll chat to bottom
+  // Scroll chat
   function scrollChatToBottom() {
     chatArea.scrollTop = chatArea.scrollHeight;
   }
-
-  // Ensure chat input stays visible on mobile keyboards
   window.addEventListener("resize", scrollChatToBottom);
 
-  // Disable chat by default
+  // Disable chat initially
   enableChat(false);
-
-  // Expose sidebar functions globally
-  window.toggleSidebar = toggleSidebar;
-  window.hideSidebar = hideSidebar;
 });
