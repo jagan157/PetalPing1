@@ -1,154 +1,155 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ----- Elements -----
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
+  const menuBtn = document.querySelector(".menu-btn");
+  const addBtn = document.getElementById("addFriendBtn");
+  const friendList = document.getElementById("friendList");
   const chatArea = document.getElementById("chatArea");
+  const chatWith = document.getElementById("chatWith");
+
   const messageInput = document.getElementById("messageInput");
   const sendBtn = document.getElementById("sendBtn");
   const emojiBtn = document.getElementById("emojiBtn");
   const attachBtn = document.getElementById("attachBtn");
   const fileInput = document.getElementById("fileInput");
   const emojiPanel = document.getElementById("emojiPanel");
+
   let currentFriend = null;
 
-  // Emojis
-  const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😉","😊","😋","😎","😍","😘","🥰"];
-  emojis.forEach(e => {
-    const span = document.createElement("span");
-    span.textContent = e;
-    span.onclick = () => { if(!messageInput.disabled) messageInput.value += e; };
-    emojiPanel.appendChild(span);
-  });
-
-  // Sidebar toggle
-  function toggleSidebar() {
+  // ----- Sidebar -----
+  menuBtn.addEventListener("click", () => {
     sidebar.classList.toggle("show");
     overlay.classList.toggle("active");
-  }
-  function hideSidebar() {
+    fixChromeMobile();
+  });
+
+  overlay.addEventListener("click", () => {
     sidebar.classList.remove("show");
     overlay.classList.remove("active");
+    fixChromeMobile();
+  });
+
+  // ----- Mobile Chrome fix -----
+  function fixChromeMobile() {
+    const chat = document.querySelector(".chat");
+    chat.style.display = "none";
+    chat.offsetHeight; // force reflow
+    chat.style.display = "flex";
   }
-  window.toggleSidebar = toggleSidebar;
-  window.hideSidebar = hideSidebar;
 
-  // Fix Chrome mobile transform
-  setTimeout(() => {
-    sidebar.style.transform = sidebar.classList.contains("show") ? "translateX(0)" : "translateX(-100%)";
-  }, 50);
-
-  // Add friend
-  window.openAddFriendModal = function() {
+  // ----- Add Friend -----
+  addBtn.addEventListener("click", () => {
     const name = prompt("Enter friend's name:");
-    if(!name) return;
-    const li = document.createElement("li");
-    li.innerHTML = `<span>${name}</span>`;
-    li.onclick = () => selectFriend(name);
-    document.getElementById("friendList").appendChild(li);
-  }
+    if (!name) return;
 
-  // Select friend
+    const li = document.createElement("li");
+    li.textContent = name;
+    li.addEventListener("click", () => selectFriend(name));
+    friendList.appendChild(li);
+  });
+
+  // ----- Select Friend -----
   function selectFriend(name) {
     currentFriend = name;
-    document.getElementById("chatWith").innerText = "Chat with " + name;
+    chatWith.textContent = "Chat with " + name;
     chatArea.innerHTML = "";
     enableChat(true);
-    hideSidebar();
+    sidebar.classList.remove("show");
+    overlay.classList.remove("active");
     scrollChatToBottom();
   }
 
-  // Enable/disable chat
+  // ----- Enable/Disable Chat -----
   function enableChat(enable) {
-    messageInput.disabled = !enable;
-    sendBtn.disabled = !enable;
-    emojiBtn.disabled = !enable;
-    attachBtn.disabled = !enable;
-    messageInput.style.display = "inline-block";
-    sendBtn.style.display = "inline-block";
-    emojiBtn.style.display = "inline-block";
-    attachBtn.style.display = "inline-block";
+    [messageInput, sendBtn, emojiBtn, attachBtn].forEach(el => el.disabled = !enable);
   }
 
-  // Send message
-  window.sendMessage = function() {
-    if(!currentFriend) return;
+  enableChat(false);
+
+  // ----- Send Message -----
+  sendBtn.addEventListener("click", () => {
+    if (!currentFriend) return;
     const text = messageInput.value.trim();
-    if(!text) return;
-    addMessage(text, "sent", null);
+    if (!text) return;
+    addMessage(text, "sent");
     messageInput.value = "";
-    scrollChatToBottom();
-    setTimeout(() => {
-      addMessage("Reply to: " + text, "received", null);
-      scrollChatToBottom();
-    }, 1000);
-  }
 
-  // Add message
+    setTimeout(() => {
+      addMessage("Reply to: " + text, "received");
+    }, 1000);
+  });
+
+  // ----- Add Message -----
   function addMessage(text, type, file=null) {
     const msg = document.createElement("div");
     msg.className = "message " + type;
-    if(file){
+
+    if (file) {
       const img = document.createElement("img");
       img.src = file;
       img.className = "previewImg";
-      img.onclick = () => previewInChat(file);
+      img.addEventListener("click", () => previewInChat(file));
       msg.appendChild(img);
-      if(text){
-        const label = document.createElement("div");
-        label.textContent = text;
-        label.style.fontSize = "12px";
-        label.style.marginTop = "3px";
-        msg.appendChild(label);
-      }
-    } else {
+    }
+
+    if (text) {
       const txt = document.createElement("div");
       txt.textContent = text;
       msg.appendChild(txt);
     }
+
     const timestamp = document.createElement("div");
     const now = new Date();
     timestamp.className = "timestamp";
     timestamp.textContent = now.toLocaleDateString() + " " + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
     msg.appendChild(timestamp);
+
     chatArea.appendChild(msg);
     scrollChatToBottom();
   }
 
-  // Preview file
-  window.previewFile = function(input){
-    const file = input.files[0];
-    if(!file || !currentFriend) return;
+  // ----- File Attach -----
+  attachBtn.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (!file || !currentFriend) return;
     const reader = new FileReader();
-    reader.onload = e => { addMessage("", "sent", e.target.result); };
+    reader.onload = e => addMessage("", "sent", e.target.result);
     reader.readAsDataURL(file);
-  }
+  });
 
-  // Preview image overlay
-  function previewInChat(src){
+  function previewInChat(src) {
     const overlayDiv = document.createElement("div");
     overlayDiv.className = "chatOverlay";
     const img = document.createElement("img");
     img.src = src;
     overlayDiv.appendChild(img);
-    overlayDiv.onclick = () => overlayDiv.remove();
+    overlayDiv.addEventListener("click", () => overlayDiv.remove());
     document.body.appendChild(overlayDiv);
   }
 
-  // Emoji toggle
-  window.toggleEmojiPanel = function() {
-    emojiPanel.classList.toggle("active");
-  }
+  // ----- Emoji Panel -----
+  const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😉","😊","😋","😎","😍","😘","🥰"];
+  emojis.forEach(e => {
+    const span = document.createElement("span");
+    span.textContent = e;
+    span.addEventListener("click", () => {
+      if (!messageInput.disabled) messageInput.value += e;
+    });
+    emojiPanel.appendChild(span);
+  });
+
+  emojiBtn.addEventListener("click", () => emojiPanel.classList.toggle("active"));
   document.addEventListener("click", (e) => {
-    if(!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)) {
+    if (!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)) {
       emojiPanel.classList.remove("active");
     }
   });
 
-  // Scroll chat
+  // ----- Scroll Chat -----
   function scrollChatToBottom() {
     chatArea.scrollTop = chatArea.scrollHeight;
   }
   window.addEventListener("resize", scrollChatToBottom);
-
-  // Disable chat initially
-  enableChat(false);
 });
