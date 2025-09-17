@@ -61,11 +61,10 @@ html, body {
 
 /* Chat container */
 .chat {
-  height: 100vh;
-  width: 100vw;
   display: flex;
   flex-direction: column;
-  position: relative;
+  height: 100vh;
+  width: 100vw;
   background: #fafafa;
   box-sizing: border-box;
 }
@@ -99,12 +98,19 @@ html, body {
 
 /* Chat area */
 .chat-area {
-  flex: 1;
+  flex: 1 1 auto;
   padding: 10px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   background: #fefefe;
+}
+
+/* Spacer to prevent messages hiding behind input */
+.chat-area::after {
+  content: "";
+  display: block;
+  height: 60px; /* height of chat-input */
 }
 
 /* Messages */
@@ -164,10 +170,14 @@ html, body {
 
 /* Chat input */
 .chat-input {
+  flex-shrink: 0; /* prevent collapsing */
   display: flex;
   padding: 8px;
   background: #eee;
   align-items: center;
+  position: sticky;
+  bottom: 0; /* stick to bottom */
+  z-index: 10;
 }
 .chat-input input[type=text] {
   flex: 1;
