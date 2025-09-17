@@ -65,9 +65,10 @@ html, body {
 .chat {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* full viewport */
+  height: 100vh;
   width: 100vw;
   background: #fafafa;
+  position: relative; /* needed for absolute input */
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -100,12 +101,8 @@ html, body {
   overflow-y: auto;
   padding: 10px;
   background: #fefefe;
-  min-height: 0; /* fixes mobile Chrome blank area */
-}
-.chat-area::after {
-  content: "";
-  display: block;
-  height: 60px; /* height of chat-input */
+  min-height: 0; /* fixes Chrome flex issue */
+  margin-bottom: 60px; /* space for input */
 }
 
 /* Messages */
@@ -141,15 +138,16 @@ html, body {
   border-radius: 10px;
 }
 
-/* Chat input */
+/* Chat input - always visible */
 .chat-input {
-  flex-shrink: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   padding: 8px;
   background: #eee;
   align-items: center;
-  position: sticky;
-  bottom: 0;
   z-index: 10;
 }
 .chat-input input[type=text] {
