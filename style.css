@@ -4,23 +4,24 @@ body, html {
   padding: 0;
   font-family: Arial, sans-serif;
   height: 100%;
-  width: 100%;
   background: #fafafa;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Sidebar */
 .sidebar {
-  background: #fff;
+  background: #f3f3f3;
   height: 100%;
-  width: 280px;
+  width: 250px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 20;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 .sidebar.show { transform: translateX(0); }
 .sidebar h2 {
@@ -57,41 +58,32 @@ body, html {
 }
 .overlay.active { display: block; }
 
-/* Chat container */
+/* Chat box */
 .chat {
   width: 100%;
-  height: 100%;
+  max-width: 420px;      /* WhatsApp-like compact */
+  height: 100vh;         /* always full screen */
   display: flex;
   flex-direction: column;
-  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 0;      /* flat edges like real apps */
+  overflow: hidden;
   background: #fafafa;
-}
-
-/* Desktop App-like Frame */
-@media (min-width: 768px) {
-  .chat {
-    max-width: 420px;
-    max-height: 720px;
-    margin: auto;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  }
+  position: relative;
 }
 
 /* Chat header */
 .chat-header {
   background: #ff69b4;
   color: #fff;
-  padding: 14px;
+  padding: 12px;
   display: flex;
   align-items: center;
-  font-size: 16px;
 }
 .menu-btn {
-  margin-right: 12px;
+  margin-right: 10px;
   cursor: pointer;
-  font-size: 22px;
+  font-size: 24px;
 }
 
 /* Chat area */
@@ -101,37 +93,34 @@ body, html {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background: #fefefe;
 }
 
 /* Messages */
 .message {
-  margin: 5px 0;
-  padding: 8px 12px;
-  border-radius: 15px;
-  max-width: 70%;
+  margin: 6px 0;
+  padding: 10px 14px;
+  border-radius: 18px;
+  max-width: 75%;         /* consistent bubble width */
   word-wrap: break-word;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.4;
 }
 .sent {
   background: #ff69b4;
   color: white;
   align-self: flex-end;
-  text-align: right;
 }
 .received {
-  background: #ddd;
+  background: #e5e5ea;
   color: black;
   align-self: flex-start;
-  text-align: left;
 }
 .message .timestamp {
   font-size: 10px;
   color: rgba(0,0,0,0.5);
-  margin-top: 2px;
-  align-self: flex-end;
+  margin-top: 3px;
+  text-align: right;
 }
 .previewImg {
   max-width: 200px;
@@ -141,6 +130,18 @@ body, html {
   margin-top: 5px;
   object-fit: cover;
 }
+
+/* Animations (fade/slide only, no zoom) */
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.message.sent { animation: fadeInRight 0.2s ease; }
+.message.received { animation: fadeInLeft 0.2s ease; }
 
 /* Chat overlay preview */
 .chatOverlay {
@@ -162,17 +163,16 @@ body, html {
 /* Chat input */
 .chat-input {
   display: flex;
-  padding: 8px;
+  padding: 10px;
   background: #eee;
   align-items: center;
 }
 .chat-input input[type=text] {
   flex: 1;
-  padding: 10px;
+  padding: 8px;
   border-radius: 20px;
   border: 1px solid #ccc;
   margin: 0 5px;
-  font-size: 14px;
 }
 .chat-input button {
   border: none;
@@ -191,7 +191,7 @@ body, html {
 .emoji-panel {
   display: none;
   position: absolute;
-  bottom: 60px;
+  bottom: 50px;
   left: 10px;
   width: 220px;
   background: #fff;
@@ -215,15 +215,21 @@ body, html {
   padding: 5px;
   display: inline-block;
 }
-
-/* Animations */
-@keyframes slideInRight {
-  from { transform: translateX(50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+.menu-btn {
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 22px;
+  background: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff69b4;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
 }
-@keyframes slideInLeft {
-  from { transform: translateX(-50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+.menu-btn:hover {
+  transform: scale(1.15) rotate(10deg);
 }
-.message.sent { animation: slideInRight 0.3s ease; }
-.message.received { animation: slideInLeft 0.3s ease; }
