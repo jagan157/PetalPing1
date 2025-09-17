@@ -10,19 +10,6 @@ body, html {
   align-items: center;
 }
 
-/* Chat wrapper for fixed compact view */
-.chat-wrapper {
-  width: 420px;          /* fixed width like WhatsApp */
-  max-width: 100%;
-  height: 100vh;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #ccc;
-  overflow: hidden;
-  background: #fafafa;
-}
-
 /* Sidebar */
 .sidebar {
   background: #f3f3f3;
@@ -31,7 +18,7 @@ body, html {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 50;
+  z-index: 20;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
@@ -67,17 +54,19 @@ body, html {
   position: fixed;
   top:0; left:0; right:0; bottom:0;
   background: rgba(0,0,0,0.5);
-  z-index: 45;
+  z-index: 15;
 }
 .overlay.active { display: block; }
 
 /* Chat box */
 .chat {
   width: 100%;
-  height: 100%;
+  max-width: 420px;      /* WhatsApp-like compact */
+  height: 100vh;         /* always full screen */
   display: flex;
   flex-direction: column;
-  border-radius: 0;
+  border: 1px solid #ccc;
+  border-radius: 0;      /* flat edges like real apps */
   overflow: hidden;
   background: #fafafa;
   position: relative;
@@ -94,19 +83,8 @@ body, html {
 .menu-btn {
   margin-right: 10px;
   cursor: pointer;
-  font-size: 22px;
-  background: #fff;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ff69b4;
-  transition: transform 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  font-size: 24px;
 }
-.menu-btn:hover { transform: scale(1.15) rotate(10deg); }
 
 /* Chat area */
 .chat-area {
@@ -122,7 +100,7 @@ body, html {
   margin: 6px 0;
   padding: 10px 14px;
   border-radius: 18px;
-  max-width: 75%;
+  max-width: 75%;         /* consistent bubble width */
   word-wrap: break-word;
   display: inline-block;
   font-size: 14px;
@@ -153,9 +131,15 @@ body, html {
   object-fit: cover;
 }
 
-/* Animations */
-@keyframes fadeInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-@keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+/* Animations (fade/slide only, no zoom) */
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
 .message.sent { animation: fadeInRight 0.2s ease; }
 .message.received { animation: fadeInLeft 0.2s ease; }
 
@@ -189,7 +173,6 @@ body, html {
   border-radius: 20px;
   border: 1px solid #ccc;
   margin: 0 5px;
-  font-size: 16px; /* prevent zoom on iOS */
 }
 .chat-input button {
   border: none;
@@ -231,10 +214,4 @@ body, html {
   font-size: 20px;
   padding: 5px;
   display: inline-block;
-}
-
-/* Mobile responsive for sidebar */
-@media screen and (max-width: 600px){
-  .chat-wrapper { width: 100%; }
-  .sidebar { width: 80%; }
 }
