@@ -3,25 +3,24 @@ body, html {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  height: 100vh;
+  height: 100%;
+  width: 100%;
   background: #fafafa;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  overflow: hidden;
 }
 
 /* Sidebar */
 .sidebar {
-  background: #f3f3f3;
+  background: #fff;
   height: 100%;
-  width: 250px;
+  width: 280px;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 20;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.2);
 }
 .sidebar.show { transform: translateX(0); }
 .sidebar h2 {
@@ -58,33 +57,41 @@ body, html {
 }
 .overlay.active { display: block; }
 
-/* Chat box (mobile-like frame) */
+/* Chat container */
 .chat {
   width: 100%;
-  max-width: 420px;
   height: 100%;
-  max-height: 720px;
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc;
-  border-radius: 15px;
-  overflow: hidden;
   position: relative;
   background: #fafafa;
+}
+
+/* Desktop App-like Frame */
+@media (min-width: 768px) {
+  .chat {
+    max-width: 420px;
+    max-height: 720px;
+    margin: auto;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
 }
 
 /* Chat header */
 .chat-header {
   background: #ff69b4;
   color: #fff;
-  padding: 12px;
+  padding: 14px;
   display: flex;
   align-items: center;
+  font-size: 16px;
 }
 .menu-btn {
-  margin-right: 10px;
+  margin-right: 12px;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 22px;
 }
 
 /* Chat area */
@@ -94,6 +101,7 @@ body, html {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  background: #fefefe;
 }
 
 /* Messages */
@@ -154,16 +162,17 @@ body, html {
 /* Chat input */
 .chat-input {
   display: flex;
-  padding: 10px;
+  padding: 8px;
   background: #eee;
   align-items: center;
 }
 .chat-input input[type=text] {
   flex: 1;
-  padding: 8px;
+  padding: 10px;
   border-radius: 20px;
   border: 1px solid #ccc;
   margin: 0 5px;
+  font-size: 14px;
 }
 .chat-input button {
   border: none;
@@ -182,7 +191,7 @@ body, html {
 .emoji-panel {
   display: none;
   position: absolute;
-  bottom: 50px;
+  bottom: 60px;
   left: 10px;
   width: 220px;
   background: #fff;
