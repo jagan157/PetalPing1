@@ -96,6 +96,25 @@ html, body {
   cursor: pointer;
   font-size: 22px;
 }
+.menu-btn {
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 22px;
+  background: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff69b4;
+  transition: transform 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.menu-btn:hover {
+  transform: scale(1.15) rotate(10deg);
+}
+
 
 /* Chat area */
 .chat-area {
