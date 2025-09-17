@@ -2,36 +2,12 @@ const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("overlay");
 const chatArea = document.getElementById("chatArea");
 const messageInput = document.getElementById("messageInput");
-const emojiPanel = document.getElementById("emojiPanel");
+const sendBtn = document.getElementById("sendBtn");
+const emojiBtn = document.getElementById("emojiBtn");
+const attachBtn = document.getElementById("attachBtn");
 const fileInput = document.getElementById("fileInput");
+const emojiPanel = document.getElementById("emojiPanel");
 let currentFriend = null;
-
-// Chat input elements
-const chatInputElements = {
-  input: messageInput,
-  emojiBtn: document.querySelector(".emoji-btn"),
-  attachBtn: document.querySelector(".attach-btn"),
-  sendBtn: document.getElementById("sendBtn")
-};
-
-// Disable chat initially
-function disableChatInput() {
-  chatInputElements.input.disabled = true;
-  chatInputElements.input.placeholder = "Select a friend to start chatting...";
-  chatInputElements.emojiBtn.disabled = true;
-  chatInputElements.attachBtn.disabled = true;
-  chatInputElements.sendBtn.disabled = true;
-}
-function enableChatInput() {
-  chatInputElements.input.disabled = false;
-  chatInputElements.input.placeholder = "Type a message...";
-  chatInputElements.emojiBtn.disabled = false;
-  chatInputElements.attachBtn.disabled = false;
-  chatInputElements.sendBtn.disabled = false;
-}
-
-// Initialize as disabled
-disableChatInput();
 
 // Emojis
 const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😉","😊","😋","😎","😍","😘","🥰"];
@@ -39,25 +15,17 @@ emojis.forEach(e => {
   const span = document.createElement("span");
   span.textContent = e;
   span.onclick = () => {
-    if(!currentFriend) return;
-    messageInput.value += e;
-    messageInput.focus();
+    if (!messageInput.disabled) messageInput.value += e;
   };
   emojiPanel.appendChild(span);
 });
 
 // Sidebar toggle
-function toggleSidebar() {
-  sidebar.classList.toggle("show");
-  overlay.classList.toggle("active");
-}
-function hideSidebar() {
-  sidebar.classList.remove("show");
-  overlay.classList.remove("active");
-}
+function toggleSidebar(){ sidebar.classList.toggle("show"); overlay.classList.toggle("active"); }
+function hideSidebar(){ sidebar.classList.remove("show"); overlay.classList.remove("active"); }
 
 // Add friend
-function openAddFriendModal() {
+function openAddFriendModal(){
   const name = prompt("Enter friend's name:");
   if(!name) return;
   const li = document.createElement("li");
@@ -67,29 +35,36 @@ function openAddFriendModal() {
 }
 
 // Select friend
-function selectFriend(name) {
+function selectFriend(name){
   currentFriend = name;
   document.getElementById("chatWith").innerText = "Chat with " + name;
   chatArea.innerHTML = "";
+  enableChat(true);
   hideSidebar();
-  enableChatInput();
+}
+
+// Enable/disable chat inputs
+function enableChat(enable){
+  messageInput.disabled = !enable;
+  sendBtn.disabled = !enable;
+  emojiBtn.disabled = !enable;
+  attachBtn.disabled = !enable;
 }
 
 // Send message
-function sendMessage() {
+function sendMessage(){
   if(!currentFriend) return;
   const text = messageInput.value.trim();
   if(!text) return;
-  addMessage(text,"sent", null, currentFriend);
+  addMessage(text,"sent",null);
   messageInput.value = "";
-
   setTimeout(() => {
-    addMessage("Reply to: "+text,"received", null, currentFriend);
+    addMessage("Reply to: "+text,"received",null);
   },1000);
 }
 
 // Add message
-function addMessage(text, type, file=null, sender=null){
+function addMessage(text,type,file=null){
   const msg = document.createElement("div");
   msg.className = "message " + type;
 
@@ -112,14 +87,6 @@ function addMessage(text, type, file=null, sender=null){
     msg.appendChild(txt);
   }
 
-  if(sender){
-    const senderDiv = document.createElement("div");
-    senderDiv.textContent = sender;
-    senderDiv.style.fontSize = "10px";
-    senderDiv.style.opacity = "0.6";
-    msg.insertBefore(senderDiv, msg.firstChild);
-  }
-
   const timestamp = document.createElement("div");
   const now = new Date();
   timestamp.className = "timestamp";
@@ -130,16 +97,16 @@ function addMessage(text, type, file=null, sender=null){
   chatArea.scrollTop = chatArea.scrollHeight;
 }
 
-// File preview
+// Preview file
 function previewFile(input){
   const file = input.files[0];
   if(!file || !currentFriend) return;
   const reader = new FileReader();
-  reader.onload = e => addMessage("", "sent", e.target.result, currentFriend);
+  reader.onload = e => { addMessage("", "sent", e.target.result); };
   reader.readAsDataURL(file);
 }
 
-// Image overlay
+// Preview image overlay
 function previewInChat(src){
   const overlay = document.createElement("div");
   overlay.className = "chatOverlay";
@@ -150,14 +117,15 @@ function previewInChat(src){
   document.body.appendChild(overlay);
 }
 
-// Emoji toggle
+// Emoji panel toggle
 function toggleEmojiPanel(){
-  if(!currentFriend) return;
-  emojiPanel.style.display = (emojiPanel.style.display === "block") ? "none" : "block";
+  emojiPanel.classList.toggle("active");
 }
-
-// Close emoji when clicking outside
-document.addEventListener("click", (e)=>{
-  if(!emojiPanel.contains(e.target) && !e.target.classList.contains("emoji-btn"))
-    emojiPanel.style.display = "none";
+document.addEventListener("click",(e)=>{
+  if(!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)){
+    emojiPanel.classList.remove("active");
+  }
 });
+
+// Disable chat by default
+enableChat(false);
