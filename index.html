@@ -27,25 +27,23 @@
   <!-- Overlay -->
   <div id="overlay" class="overlay" onclick="hideSidebar()"></div>
 
-  <!-- Chat Wrapper for fixed compact view -->
-  <div class="chat-wrapper">
-    <div class="chat">
-      <div class="chat-header">
-        <span class="menu-btn" onclick="toggleSidebar()">🪐</span>
-        <span id="chatWith">Select a friend</span>
-      </div>
-      <div class="chat-area" id="chatArea"></div>
-      <div class="chat-input">
-        <button class="emoji-btn" id="emojiBtn" disabled onclick="toggleEmojiPanel()">🌈</button>
-        <button class="attach-btn" id="attachBtn" disabled onclick="document.getElementById('fileInput').click()">🧷</button>
-        <input type="file" id="fileInput" style="display:none" onchange="previewFile(this)">
-        <input type="text" id="messageInput" placeholder="Type a message..." disabled>
-        <button id="sendBtn" disabled onclick="sendMessage()">🕊️</button>
-      </div>
-
-      <!-- Emoji Panel -->
-      <div id="emojiPanel" class="emoji-panel"></div>
+  <!-- Chat Section -->
+  <div class="chat">
+    <div class="chat-header">
+      <span class="menu-btn" onclick="toggleSidebar()">☰</span>
+      <span id="chatWith">Select a friend</span>
     </div>
+    <div class="chat-area" id="chatArea"></div>
+    <div class="chat-input">
+      <button class="emoji-btn" id="emojiBtn" disabled onclick="toggleEmojiPanel()">🌈</button>
+      <button class="attach-btn" id="attachBtn" disabled onclick="document.getElementById('fileInput').click()">🧷</button>
+      <input type="file" id="fileInput" style="display:none" onchange="previewFile(this)">
+      <input type="text" id="messageInput" placeholder="Type a message..." disabled>
+      <button id="sendBtn" disabled onclick="sendMessage()">🕊️</button>
+    </div>
+
+    <!-- Emoji Panel -->
+    <div id="emojiPanel" class="emoji-panel"></div>
   </div>
 
   <script src="script.js"></script>
