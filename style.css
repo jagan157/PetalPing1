@@ -1,22 +1,23 @@
 /* Reset */
-body, html {
+html, body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
   height: 100%;
   width: 100%;
+  font-family: Arial, sans-serif;
   background: #fafafa;
   overflow: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Sidebar */
 .sidebar {
   background: #fff;
-  height: 100%;
   width: 280px;
   position: fixed;
   top: 0;
   left: 0;
+  height: 100vh;
   z-index: 20;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
@@ -52,6 +53,7 @@ body, html {
   display: none;
   position: fixed;
   top:0; left:0; right:0; bottom:0;
+  height: 100vh;
   background: rgba(0,0,0,0.5);
   z-index: 15;
 }
@@ -59,12 +61,13 @@ body, html {
 
 /* Chat container */
 .chat {
-  width: 100%;
-  height: 100%;
+  height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   position: relative;
   background: #fafafa;
+  box-sizing: border-box;
 }
 
 /* Desktop App-like Frame */
@@ -215,20 +218,6 @@ body, html {
   padding: 5px;
   display: inline-block;
 }
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-.chat {
-  height: 100vh;
-  width: 100vw;
-  max-width: 100%;
-  max-height: 100%;
-  box-sizing: border-box;
-}
-
 
 /* Animations */
 @keyframes slideInRight {
@@ -241,4 +230,3 @@ html, body {
 }
 .message.sent { animation: slideInRight 0.3s ease; }
 .message.received { animation: slideInLeft 0.3s ease; }
-
