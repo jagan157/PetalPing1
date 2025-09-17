@@ -65,10 +65,9 @@ html, body {
 .chat {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 100%;
+  height: 100vh; /* full viewport */
+  width: 100vw;
   background: #fafafa;
-  position: relative;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -98,14 +97,16 @@ html, body {
 /* Chat area */
 .chat-area {
   flex: 1 1 auto;
-  padding: 10px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  padding: 10px;
   background: #fefefe;
   min-height: 0; /* fixes mobile Chrome blank area */
 }
-.chat-area::after { content: ""; display: block; height: 60px; }
+.chat-area::after {
+  content: "";
+  display: block;
+  height: 60px; /* height of chat-input */
+}
 
 /* Messages */
 .message {
