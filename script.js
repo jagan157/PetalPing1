@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // ----- Elements -----
   const sidebar = document.getElementById("sidebar");
   const overlay = document.getElementById("overlay");
   const menuBtn = document.querySelector(".menu-btn");
@@ -17,20 +16,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentFriend = null;
 
-  // ----- Sidebar -----
+  // ----- Sidebar toggle -----
   menuBtn.addEventListener("click", () => {
     sidebar.classList.toggle("show");
     overlay.classList.toggle("active");
     fixChromeMobile();
+    scrollChatToBottom();
   });
-
   overlay.addEventListener("click", () => {
     sidebar.classList.remove("show");
     overlay.classList.remove("active");
     fixChromeMobile();
+    scrollChatToBottom();
   });
 
-  // ----- Mobile Chrome fix -----
   function fixChromeMobile() {
     const chat = document.querySelector(".chat");
     chat.style.display = "none";
@@ -38,18 +37,17 @@ document.addEventListener("DOMContentLoaded", () => {
     chat.style.display = "flex";
   }
 
-  // ----- Add Friend -----
+  // ----- Add friend -----
   addBtn.addEventListener("click", () => {
     const name = prompt("Enter friend's name:");
     if (!name) return;
-
     const li = document.createElement("li");
     li.textContent = name;
     li.addEventListener("click", () => selectFriend(name));
     friendList.appendChild(li);
   });
 
-  // ----- Select Friend -----
+  // ----- Select friend -----
   function selectFriend(name) {
     currentFriend = name;
     chatWith.textContent = "Chat with " + name;
@@ -60,27 +58,24 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollChatToBottom();
   }
 
-  // ----- Enable/Disable Chat -----
+  // ----- Enable chat -----
   function enableChat(enable) {
     [messageInput, sendBtn, emojiBtn, attachBtn].forEach(el => el.disabled = !enable);
   }
 
   enableChat(false);
 
-  // ----- Send Message -----
+  // ----- Send message -----
   sendBtn.addEventListener("click", () => {
     if (!currentFriend) return;
     const text = messageInput.value.trim();
     if (!text) return;
     addMessage(text, "sent");
     messageInput.value = "";
-
-    setTimeout(() => {
-      addMessage("Reply to: " + text, "received");
-    }, 1000);
+    setTimeout(() => addMessage("Reply to: " + text, "received"), 1000);
   });
 
-  // ----- Add Message -----
+  // ----- Add message -----
   function addMessage(text, type, file=null) {
     const msg = document.createElement("div");
     msg.className = "message " + type;
@@ -109,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollChatToBottom();
   }
 
-  // ----- File Attach -----
+  // ----- File attach -----
   attachBtn.addEventListener("click", () => fileInput.click());
   fileInput.addEventListener("change", () => {
     const file = fileInput.files[0];
@@ -129,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(overlayDiv);
   }
 
-  // ----- Emoji Panel -----
+  // ----- Emojis -----
   const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😉","😊","😋","😎","😍","😘","🥰"];
   emojis.forEach(e => {
     const span = document.createElement("span");
@@ -141,15 +136,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   emojiBtn.addEventListener("click", () => emojiPanel.classList.toggle("active"));
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", e => {
     if (!emojiPanel.contains(e.target) && !emojiBtn.contains(e.target)) {
       emojiPanel.classList.remove("active");
     }
   });
 
-  // ----- Scroll Chat -----
+  // ----- Scroll -----
   function scrollChatToBottom() {
     chatArea.scrollTop = chatArea.scrollHeight;
   }
+
   window.addEventListener("resize", scrollChatToBottom);
 });
