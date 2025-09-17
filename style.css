@@ -68,12 +68,12 @@ html, body {
   height: 100vh;
   width: 100vw;
   background: #fafafa;
-  position: relative; /* needed for absolute input */
+  position: relative;
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* Desktop App-like Frame */
+/* Desktop App Frame */
 @media (min-width: 768px) {
   .chat {
     max-width: 420px;
@@ -101,8 +101,8 @@ html, body {
   overflow-y: auto;
   padding: 10px;
   background: #fefefe;
-  min-height: 0; /* fixes Chrome flex issue */
-  margin-bottom: 60px; /* space for input */
+  min-height: 0;
+  margin-bottom: 70px; /* space for fixed input */
 }
 
 /* Messages */
@@ -138,9 +138,9 @@ html, body {
   border-radius: 10px;
 }
 
-/* Chat input - always visible */
+/* Chat input fixed */
 .chat-input {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
@@ -148,7 +148,8 @@ html, body {
   padding: 8px;
   background: #eee;
   align-items: center;
-  z-index: 10;
+  z-index: 100;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
 .chat-input input[type=text] {
   flex: 1;
@@ -168,11 +169,11 @@ html, body {
 }
 .chat-input button:disabled { background: #bbb; cursor: not-allowed; }
 
-/* Emoji panel */
+/* Emoji panel fixed above input */
 .emoji-panel {
   display: none;
-  position: absolute;
-  bottom: 60px;
+  position: fixed;
+  bottom: 70px;
   left: 10px;
   width: 220px;
   background: #fff;
@@ -180,7 +181,7 @@ html, body {
   border-radius: 10px;
   max-height: 200px;
   overflow-y: auto;
-  z-index: 30;
+  z-index: 101;
   transform: translateY(20px);
   opacity: 0;
   transition: all 0.3s ease;
