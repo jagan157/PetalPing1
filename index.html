@@ -7,33 +7,30 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- Login Page -->
   <div id="loginPage" class="login-page">
-    <div class="login-box">
-      <h2>Login to PetalPing 🌸</h2>
+  <div class="login-box">
+    <h2 id="formTitle">Sign In to PetalPing 🌸</h2>
 
-      <!-- Mobile login -->
-      <div id="mobileLoginContainer">
-        <input type="text" id="mobileInput" placeholder="+1 555-555-5555" value="+1 555-555-5555" />
-        <button id="loginBtn">Send OTP</button>
-      </div>
+    <input type="text" id="usernameInput" placeholder="Username" />
+    <input type="password" id="passwordInput" placeholder="Password" />
 
-      <!-- OTP verification -->
-      <div id="otpContainer" class="hidden">
-        <p>Enter OTP:</p>
-        <div class="otp-inputs">
-          <input class="otp-digit" maxlength="1" />
-          <input class="otp-digit" maxlength="1" />
-          <input class="otp-digit" maxlength="1" />
-          <input class="otp-digit" maxlength="1" />
-          <input class="otp-digit" maxlength="1" />
-          <input class="otp-digit" maxlength="1" />
-        </div>
-        <button id="verifyOtpBtn">Verify OTP</button>
-      </div>
+    <!-- Signup email -->
+    <input type="email" id="emailInput" placeholder="Email" class="hidden" />
+
+    <button id="authBtn">Sign In</button>
+
+    <p id="toggleAuth" style="cursor:pointer;color:#ff69b4;margin-top:10px;">
+      New user? Sign Up
+    </p>
+
+    <!-- OTP -->
+    <div id="otpContainer" class="hidden">
+      <p>Enter Email OTP</p>
+      <input type="text" id="otpInput" placeholder="6-digit OTP" />
+      <button id="verifyOtpBtn">Verify & Login</button>
     </div>
   </div>
+</div>
 
   <!-- Main App -->
   <div id="appPage" class="app-page hidden">
@@ -77,3 +74,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
