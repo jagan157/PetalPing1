@@ -7,30 +7,32 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
+  <!-- Login / Signup Page -->
   <div id="loginPage" class="login-page">
-  <div class="login-box">
-    <h2 id="formTitle">Sign In to PetalPing 🌸</h2>
+    <div class="login-box">
 
-    <input type="text" id="usernameInput" placeholder="Username" />
-    <input type="password" id="passwordInput" placeholder="Password" />
+      <h2 id="formTitle">Sign In to PetalPing 🌸</h2>
 
-    <!-- Signup email -->
-    <input type="email" id="emailInput" placeholder="Email" class="hidden" />
+      <input type="text" id="usernameInput" placeholder="Username" />
+      <input type="password" id="passwordInput" placeholder="Password" />
+      <input type="email" id="emailInput" placeholder="Email" class="hidden" />
 
-    <button id="authBtn">Sign In</button>
+      <button id="authBtn">Sign In</button>
 
-    <p id="toggleAuth" style="cursor:pointer;color:#ff69b4;margin-top:10px;">
-      New user? Sign Up
-    </p>
+      <p id="toggleAuth" style="cursor:pointer;color:#ff69b4;margin-top:10px;">
+        New user? Sign Up
+      </p>
 
-    <!-- OTP -->
-    <div id="otpContainer" class="hidden">
-      <p>Enter Email OTP</p>
-      <input type="text" id="otpInput" placeholder="6-digit OTP" />
-      <button id="verifyOtpBtn">Verify & Login</button>
+      <!-- OTP Verification -->
+      <div id="otpContainer" class="hidden">
+        <p>Enter OTP sent to your email</p>
+        <input type="text" id="otpInput" placeholder="6-digit OTP" />
+        <button id="verifyOtpBtn">Verify & Login</button>
+      </div>
+
     </div>
   </div>
-</div>
 
   <!-- Main App -->
   <div id="appPage" class="app-page hidden">
@@ -74,4 +76,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
